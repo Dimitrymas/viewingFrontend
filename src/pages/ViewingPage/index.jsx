@@ -67,6 +67,14 @@ function ViewingPage() {
         sendJsonMessage({type: 'delete_link', id})
     }
 
+    const handleChoiceLink = (id) => {
+        sendJsonMessage({type: 'play_link', id})
+    }
+
+    const handleEnd = () => {
+        sendJsonMessage({type: 'end'})
+    }
+
     return (
         <div>
             <Header id={id}/>
@@ -83,11 +91,14 @@ function ViewingPage() {
                                 handlePause={(t) => sendJsonMessage({type: 'pause', time: t})}
                                 handlePlay={() => sendJsonMessage({type: 'play'})}
                                 handleSeek={(value) => sendJsonMessage({type: 'seek', time: value})}
+                                handleEnd={handleEnd}
                             />
                             <Playlist
                                 links={roomData.links}
                                 handleCreate={handleCreate}
                                 handleDeleteLink={handleDeleteLink}
+                                handleChoiceLink={handleChoiceLink}
+
                             />
                         </>
                     )

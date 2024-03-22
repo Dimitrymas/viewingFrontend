@@ -8,14 +8,27 @@
     width: 100%;
 }
 
+.activeContainer {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    border-radius: 0.5rem;
+    background-color: #782d85;
+    width: 100%;
+}
+
 .title {
     color: white;
-    margin: 0.3rem 0 0.3rem 0.5rem;
+    margin: 0;
+    padding: 0.3rem 0.3rem 0.5rem;
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
     width: calc(100% - 3rem);
+    cursor: pointer;
 }
+
 
 .icon {
     cursor: pointer;

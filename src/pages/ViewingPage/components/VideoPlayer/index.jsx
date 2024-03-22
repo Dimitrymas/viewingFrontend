@@ -1,14 +1,15 @@
 import ReactPlayer from 'react-player';
 import PropTypes from "prop-types";
-import {forwardRef, useImperativeHandle, useRef, useState} from "react";
+import {forwardRef, useEffect, useImperativeHandle, useRef, useState} from "react";
 import {FaPause, FaPlay} from "react-icons/fa";
 import Slider from 'rc-slider';
 import 'rc-slider/assets/index.css';
 import styles from "./index.module.css";
 import {MdOutlineFullscreen} from "react-icons/md";
 
-const  VideoPlayer = forwardRef((props, ref)  => {
-    const {currentLink, handlePause, handlePlay, handleSeek} = props
+// eslint-disable-next-line react/display-name
+const VideoPlayer = forwardRef((props, ref) => {
+    const {currentLink, handlePause, handlePlay, handleSeek, handleEnd} = props
     const [isPlaying, setIsPlaying] = useState(false)
     const [currentTime, setCurrentTime] = useState(0)
     const player = useRef(null)
@@ -46,45 +47,53 @@ const  VideoPlayer = forwardRef((props, ref)  => {
         await player.current.wrapper.requestFullscreen()
     }
 
+
+    useEffect(() => {
+        if (currentTime === player.current?.getDuration()) {
+            handleEnd()
+        }
+    }, [currentTime]);
+
+
     return (
         <>
-            <ReactPlayer
-                ref={player}
-                url={currentLink}
-                playing={isPlaying}
-                width="100%"
+            {currentLink &&
+                <>
+                    <ReactPlayer
+                        ref={player}
+                        url={currentLink}
+                        playing={isPlaying}
+                        width="100%"
+                        onProgress={onProgress}
+                        // height="100%"
+                    />
 
-                onProgress={onProgress}
-                height="100%"
-            />
-            <div className={styles.controlContainer}>
-                <button className={styles.controlPlayButton} onClick={handlePausePlay}>
-                    {isPlaying ? <FaPause/> : <FaPlay/>}
-                </button>
-                <Slider
-                    className={styles.controlSlider}
-                    min={0}
-                    max={player.current?.getDuration() || 0}
-                    value={currentTime}
-                    onChange={onSeek}/>
-                <button onClick={handleFullScreen} className={styles.controlFullScreenButton}>
-                    <MdOutlineFullscreen className={styles.fullScreenIcon}/>
-                </button>
-            </div>
+                    <div className={styles.controlContainer}>
+                        <button className={styles.controlPlayButton} onClick={handlePausePlay}>
+                            {isPlaying ? <FaPause/> : <FaPlay/>}
+                        </button>
+                        <Slider
+                            className={styles.controlSlider}
+                            min={0}
+                            max={player.current?.getDuration() || 0}
+                            value={currentTime}
+                            onChange={onSeek}/>
+                        <button onClick={handleFullScreen} className={styles.controlFullScreenButton}>
+                            <MdOutlineFullscreen className={styles.fullScreenIcon}/>
+                        </button>
+                    </div>
+                </>
+            }
         </>
     );
 })
 
-VideoPlayer.defaultProps = {
-    currentLink: 'https://www.youtube.com/shorts/7VBjWPnhMIE',
-    isPlaying: true
-}
 
 VideoPlayer.propTypes = {
     currentLink: PropTypes.string,
     isPlaying: PropTypes.bool,
-    handleStop: PropTypes.func,
-    handleStart: PropTypes.func,
+    handlePause: PropTypes.func,
+    handlePlay: PropTypes.func,
     handleSeek: PropTypes.func
 }
 

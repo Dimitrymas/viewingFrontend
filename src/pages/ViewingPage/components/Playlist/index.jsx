@@ -4,7 +4,7 @@ import {VscNewline} from "react-icons/vsc";
 import PlaylistLink from "../PlaylistLink/index.jsx";
 import {useState} from "react";
 
-function Playlist({links, handleCreate, handleDeleteLink}) {
+function Playlist({links, handleCreate, handleDeleteLink, handleChoiceLink}) {
     const [input, setInput] = useState("")
 
     const onChange = (e) => {
@@ -20,13 +20,21 @@ function Playlist({links, handleCreate, handleDeleteLink}) {
 
     return (
         <div className={styles.container}>
+            <p className={styles.title}>Write link to a video here</p>
             <form className={styles.form}>
                 <input value={input} onChange={onChange} className={styles.formInput}/>
                 <VscNewline onClick={onClick} className={styles.formIcon}/>
             </form>
             <div className={styles.linksContainer}>
                 {
-                    links.map((link, index) => <PlaylistLink handleDeleteLink={handleDeleteLink} key={index} link={link}/>)
+                    links.map((link, index) =>
+                        <PlaylistLink
+                            handleDeleteLink={handleDeleteLink}
+                            key={index}
+                            link={link}
+                            handleChoiceLink={handleChoiceLink}
+                        />
+                    )
                 }
             </div>
         </div>
@@ -42,11 +50,10 @@ Playlist.propTypes = {
             }
         )
     ).isRequired,
-    handleCreate: PropTypes.func.isRequired
+    handleCreate: PropTypes.func.isRequired,
+    handleDeleteLink: PropTypes.func.isRequired,
+    handleChoiceLink: PropTypes.func.isRequired
 }
 
-Playlist.defaultProps = {
-    links: [{"url": "https://dsufgsdugfysyfg", "id": "asdafswt39"}]
-}
 
 export default Playlist;
