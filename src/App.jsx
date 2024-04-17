@@ -2,6 +2,8 @@ import './App.css'
 import IndexPage from "./pages/IndexPage/index.jsx";
 import {createBrowserRouter, RouterProvider} from "react-router-dom";
 import ViewingPage from "./pages/ViewingPage/index.jsx";
+import NavBar from "./components/NavBar/index.jsx";
+import IndexLayout from "./components/IndexLayout/index.jsx";
 
 function App() {
 
@@ -9,13 +11,17 @@ function App() {
         {
             path: "/",
             element: (
-                <IndexPage/>
+                <IndexLayout>
+                    <IndexPage/>
+                </IndexLayout>
             ),
         },
         {
             path: "/room/:id",
             element: (
-                <ViewingPage/>
+                <IndexLayout>
+                    <ViewingPage/>
+                </IndexLayout>
             ),
         },
     ]);

@@ -1,0 +1,16 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    border-radius: 0.5rem;
+    width: calc(100% - 2rem);
+    margin: 1rem;
+}
+
+.imageContainer {
+    width: 50%;
+}
+
+.image {
+    width: 100%;
+    border-radius: 0.5rem;
+}

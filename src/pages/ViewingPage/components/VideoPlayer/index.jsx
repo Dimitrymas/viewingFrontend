@@ -1,11 +1,12 @@
 import ReactPlayer from 'react-player';
 import PropTypes from "prop-types";
-import {forwardRef, useEffect, useImperativeHandle, useRef, useState} from "react";
+import {forwardRef, useEffect, useImperativeHandle, useLayoutEffect, useRef, useState} from "react";
 import {FaPause, FaPlay} from "react-icons/fa";
 import Slider from 'rc-slider';
 import 'rc-slider/assets/index.css';
 import styles from "./index.module.css";
 import {MdOutlineFullscreen} from "react-icons/md";
+import Switch from "react-switch";
 
 // eslint-disable-next-line react/display-name
 const VideoPlayer = forwardRef((props, ref) => {
@@ -13,6 +14,7 @@ const VideoPlayer = forwardRef((props, ref) => {
     const [isPlaying, setIsPlaying] = useState(false)
     const [currentTime, setCurrentTime] = useState(0)
     const player = useRef(null)
+    const [checked, setChecked] = useState(null)
 
     useImperativeHandle(ref, () => ({
         play: () => {
@@ -47,13 +49,20 @@ const VideoPlayer = forwardRef((props, ref) => {
         await player.current.wrapper.requestFullscreen()
     }
 
-
-    useEffect(() => {
-        if (currentTime === player.current?.getDuration()) {
-            handleEnd()
+    useLayoutEffect(() => {
+        if (checked === null) {
+            console.log( Boolean(Number(localStorage.getItem('checked'))))
+            console.log(localStorage.getItem('checked'))
+            const isChecked = Boolean(Number(localStorage.getItem('checked')))
+            setChecked(isChecked)
+        } else {
+            localStorage.setItem('checked', checked ? 1 : 0)
         }
-    }, [currentTime]);
+    }, [checked,])
 
+    const onSwitchChange = (checked) => {
+        setChecked(checked)
+    }
 
     return (
         <>
@@ -64,8 +73,9 @@ const VideoPlayer = forwardRef((props, ref) => {
                         url={currentLink}
                         playing={isPlaying}
                         width="100%"
+                        onEnded={handleEnd}
                         onProgress={onProgress}
-                        // height="100%"
+                        controls={checked}
                     />
 
                     <div className={styles.controlContainer}>
@@ -78,6 +88,18 @@ const VideoPlayer = forwardRef((props, ref) => {
                             max={player.current?.getDuration() || 0}
                             value={currentTime}
                             onChange={onSeek}/>
+
+                        <Switch
+                            height={20}
+                            width={50}
+                            checkedIcon={false}
+                            onColor={'#37083f'}
+                            offColor={'#1c1c1c'}
+                            onChange={onSwitchChange}
+                            checked={checked}
+                            className={styles.controlSwitch}
+                        />
+
                         <button onClick={handleFullScreen} className={styles.controlFullScreenButton}>
                             <MdOutlineFullscreen className={styles.fullScreenIcon}/>
                         </button>
